@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ماشین‌حساب قیمت — شرکت نظافت</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark:  #0F6E56;
+    --green-mid:   #1D9E75;
+    --green-light: #E1F5EE;
+    --blue-dark:   #0C447C;
+    --blue-light:  #E6F1FB;
+    --amber:       #BA7517;
+    --amber-light: #FAEEDA;
+    --red:         #D85A30;
+    --red-light:   #FAECE7;
+    --purple:      #534AB7;
+    --purple-light:#EEEDFE;
+    --text:        #2C2C2A;
+    --text-muted:  #6B6A66;
+    --border:      #D3D1C7;
+    --bg:          #F7F6F2;
+    --card:        #FFFFFF;
+    --gray-light:  #F1EFE8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Vazirmatn', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 0 3rem;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--green-dark);
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  .header h1 { color: #fff; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .header p  { color: var(--green-light); font-size: 0.9rem; }
+
+  .container { max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 1.2rem;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .card-body { padding: 0; }
+
+  /* INPUT ROW */
+  .input-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    gap: 0.75rem;
+  }
+  .input-row:last-child { border-bottom: none; }
+  .input-row:nth-child(even) { background: var(--gray-light); }
+  .input-label { flex: 1; }
+  .input-label .main { font-weight: 500; font-size: 0.92rem; }
+  .input-label .hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+  .input-control { display: flex; align-items: center; gap: 0.4rem; }
+  .input-control input[type=number] {
+    width: 90px;
+    padding: 0.45rem 0.6rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 0.95rem;
+    text-align: center;
+    color: var(--text);
+    background: var(--bg);
+    transition: border-color 0.2s;
+    direction: ltr;
+  }
+  .input-control input[type=number]:focus {
+    outline: none;
+    border-color: var(--green-mid);
+    background: #fff;
+  }
+  .unit {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  /* SLIDER ROW */
+  .slider-row {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .slider-row:last-child { border-bottom: none; }
+  .slider-row:nth-child(even) { background: var(--gray-light); }
+  .slider-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .slider-top .main { font-weight: 500; font-size: 0.92rem; }
+  .slider-val {
+    font-weight: 700;
+    color: var(--green-dark);
+    font-size: 1rem;
+    min-width: 70px;
+    text-align: left;
+    direction: ltr;
+  }
+  input[type=range] {
+    width: 100%;
+    accent-color: var(--green-mid);
+    height: 4px;
+  }
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* RESULT CARD */
+  .result-card {
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.2rem;
+    border: 1.5px solid transparent;
+  }
+  .result-card.green  { background: var(--green-light); border-color: var(--green-mid); }
+  .result-card.amber  { background: var(--amber-light); border-color: var(--amber); }
+  .result-card.red    { background: var(--red-light);   border-color: var(--red); }
+
+  .result-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .result-label { font-weight: 600; font-size: 1rem; }
+  .result-price {
+    font-size: 2rem;
+    font-weight: 700;
+    direction: ltr;
+    line-height: 1;
+  }
+  .result-price.green { color: var(--green-dark); }
+  .result-price.amber { color: var(--amber); }
+  .result-price.red   { color: var(--red); }
+
+  .result-breakdown {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding-top: 0.6rem;
+    margin-top: 0.6rem;
+  }
+  .result-breakdown b { color: var(--text); }
+
+  .result-tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top: 0.5rem;
+  }
+  .tag-green  { background: var(--green-dark);  color: #fff; }
+  .tag-amber  { background: var(--amber);        color: #fff; }
+  .tag-red    { background: var(--red);          color: #fff; }
+
+  /* PRICE TABLE */
+  .price-table { width: 100%; border-collapse: collapse; }
+  .price-table th {
+    background: var(--green-dark);
+    color: #fff;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .price-table td {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .price-table tr:nth-child(even) td { background: var(--gray-light); }
+  .price-table tr:last-child td { border-bottom: none; }
+  .td-price { font-weight: 600; color: var(--green-dark); direction: ltr; text-align: left; }
+  .td-price.warn { color: var(--red); }
+
+  /* WARN BOX */
+  .warn-box {
+    background: var(--red-light);
+    border: 1px solid var(--red);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #712B13;
+    margin-bottom: 1.2rem;
+  }
+
+  /* INFO BOX */
+  .info-box {
+    background: var(--green-light);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    color: #085041;
+    margin: 0.5rem 0;
+  }
+
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 1.5rem 0 0.6rem;
+    padding-right: 0.2rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧮 ماشین‌حساب قیمت‌گذاری</h1>
+  <p>شرکت نظافت در آلمان — قیمت خود را حساب کن</p>
+</div>
+
+<div class="container">
+
+  <div class="warn-box">
+    ⚠️ زیر ۳۰ یورو در ساعت کار نکن! بعد از همه هزینه‌ها چیزی نمی‌ماند.
+  </div>
+
+  <!-- COSTS -->
+  <p class="section-title">هزینه‌های ثابت ماهانه</p>
+  <div class="card">
+    <div class="card-header" style="background: var(--red);">💸 هزینه‌های ماهانه من</div>
+    <div class="card-body">
+      <div class="input-row">
+        <div class="input-label">
+          <div class="main">BG BAU (بیمه اجباری)</div>
+          <div class="hint">اجباری — تغییر نمی‌کند</div>
+        </div>
+        <div class="input-control">
+          <input type="number" id="cost_bgbau" value="50" min="0" oninput="calc()">
+          <span class="unit">€</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-label">
+          <div class="main">بیمه مسئولیت (Haftpflicht)</div>
+          <div class="hint">حدود ۱۵۰–۳۰۰ یورو در سال</div>
+        </div>
+        <div class="input-control">
+          <input type="number" id="cost_haft" value="20" min="0" oninput="calc()">
+          <span class="unit">€</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-label">
+          <div class="main">بیمه درمانی (Krankenversicherung)</div>
+          <div class="hint">برای خوداشتغالان</div>
+        </div>
+        <div class="input-control">
+          <input type="number" id="cost_kv" value="250" min="0" oninput="calc()">
+          <span class="unit">€</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-label">
+          <div class="main">مواد شوینده و تجهیزات</div>
+        </div>
+        <div class="input-control">
+          <input type="number" id="cost_mat" value="80" min="0" oninput="calc()">
+          <span class="unit">€</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-label">
+          <div class="main">هزینه رفت‌وآمد</div>
+        </div>
+        <div class="input-control">
+          <input type="number" id="cost_trans" value="100" min="0" oninput="calc()">
+          <span class="unit">€</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-label">
+          <div class="main">مشاور مالیاتی (Steuerberater)</div>
+          <div class="hint">حدود ۶۰۰–۱۲۰۰ یورو در سال</div>
+        </div>
+        <div class="input-control">
+          <input type="number" id="cost_stb" value="80" min="0" oninput="calc()">
+          <span class="unit">€</span>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-label">
+          <div class="main">سایر هزینه‌ها</div>
+        </div>
+        <div class="input-control">
+          <input type="number" id="cost_other" value="30" min="0" oninput="calc()">
+          <span class="unit">€</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORK HOURS -->
+  <p class="section-title">ساعات کاری</p>
+  <div class="card">
+    <div class="card-header" style="background: var(--blue-dark);">⏱ برنامه کاری من</div>
+    <div class="card-body">
+      <div class="slider-row">
+        <div class="slider-top">
+          <span class="main">ساعت کاری در روز</span>
+          <span class="slider-val" id="v_hours_day">6 ساعت</span>
+        </div>
+        <input type="range" id="s_hours_day" min="2" max="12" value="6" oninput="calc()">
+        <div class="slider-labels"><span>۲ ساعت</span><span>۱۲ ساعت</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-top">
+          <span class="main">روز کاری در ماه</span>
+          <span class="slider-val" id="v_days">20 روز</span>
+        </div>
+        <input type="range" id="s_days" min="10" max="26" value="20" oninput="calc()">
+        <div class="slider-labels"><span>۱۰ روز</span><span>۲۶ روز</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-top">
+          <span class="main">درآمد خالص هدف ماهانه</span>
+          <span class="slider-val" id="v_target">2,000 €</span>
+        </div>
+        <input type="range" id="s_target" min="500" max="5000" step="100" value="2000" oninput="calc()">
+        <div class="slider-labels"><span>500 €</span><span>5,000 €</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <p class="section-title">نتیجه محاسبه</p>
+  <div id="result_card"></div>
+
+  <!-- PRICE COMPARISON -->
+  <p class="section-title">مقایسه قیمت‌ها</p>
+  <div class="card">
+    <div class="card-header" style="background: var(--green-dark);">📊 اگر ماهانه <span id="tbl_hours" style="font-weight:700">120</span> ساعت کار کنم</div>
+    <div class="card-body">
+      <table class="price-table">
+        <tr>
+          <th>قیمت ساعتی</th>
+          <th>درآمد ناخالص</th>
+          <th>بعد از هزینه‌ها</th>
+          <th>نتیجه</th>
+        </tr>
+        <tbody id="price_table_body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MARKET PRICES -->
+  <p class="section-title">قیمت‌های بازار آلمان ۲۰۲۵</p>
+  <div class="card">
+    <div class="card-header" style="background: var(--purple);">💰 قیمت پیشنهادی برای مشتریان</div>
+    <div class="card-body">
+      <table class="price-table">
+        <tr><th>نوع خدمت</th><th>قیمت</th></tr>
+        <tr><td>نظافت آپارتمان خصوصی</td><td class="td-price">35 – 45 €/Std.</td></tr>
+        <tr><td>نظافت اداری</td><td class="td-price">30 – 40 €/Std.</td></tr>
+        <tr><td>نظافت راه‌پله (هر طبقه)</td><td class="td-price">8 – 15 €</td></tr>
+        <tr><td>شیشه‌پاکی (هر پنجره)</td><td class="td-price">12 – 18 €</td></tr>
+        <tr><td>تحویل آپارتمان</td><td class="td-price">35 – 50 €/Std.</td></tr>
+        <tr><td>نظافت بعد از ساخت‌وساز</td><td class="td-price">45 – 60 €/Std.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="info-box">
+    💡 این ماشین‌حساب را ذخیره کن و هر بار که می‌خواهی قیمت بدهی از آن استفاده کن.
+  </div>
+
+</div>
+
+<script>
+function fmt(n) {
+  return n.toLocaleString('de-DE');
+}
+
+function calc() {
+  const costs = [
+    +document.getElementById('cost_bgbau').value,
+    +document.getElementById('cost_haft').value,
+    +document.getElementById('cost_kv').value,
+    +document.getElementById('cost_mat').value,
+    +document.getElementById('cost_trans').value,
+    +document.getElementById('cost_stb').value,
+    +document.getElementById('cost_other').value,
+  ].reduce((a,b) => a+b, 0);
+
+  const hDay   = +document.getElementById('s_hours_day').value;
+  const days   = +document.getElementById('s_days').value;
+  const target = +document.getElementById('s_target').value;
+
+  document.getElementById('v_hours_day').textContent = hDay + ' ساعت';
+  document.getElementById('v_days').textContent      = days + ' روز';
+  document.getElementById('v_target').textContent    = fmt(target) + ' €';
+
+  const totalHours = hDay * days;
+  const needed     = target + costs;
+  const minPrice   = Math.ceil(needed / totalHours);
+
+  // Result card
+  let cls, tag, tagCls, msg;
+  if (minPrice < 30) {
+    cls = 'red'; tagCls = 'tag-red'; tag = '⚠️ خطرناک — قیمت خیلی پایین است';
+    msg = 'با این تنظیمات، حتی هزینه‌هایت را هم نمی‌توانی پوشش دهی. باید ساعات کمتر یا هدف درآمد کمتر تنظیم کنی.';
+  } else if (minPrice <= 40) {
+    cls = 'green'; tagCls = 'tag-green'; tag = '✅ عالی — این قیمت در بازار قابل فروش است';
+    msg = 'این قیمت هم برای تو سودآور است و هم مشتری حاضر است بپردازد. یک نقطه عالی.';
+  } else {
+    cls = 'amber'; tagCls = 'tag-amber'; tag = '💡 بالا — فقط با کیفیت بالا قابل فروش است';
+    msg = 'این قیمت در بازار ممکن است، اما نیاز به اعتماد مشتری و کیفیت کار دارد.';
+  }
+
+  document.getElementById('result_card').innerHTML = `
+    <div class="result-card ${cls}">
+      <div class="result-main">
+        <div>
+          <div class="result-label">حداقل قیمت ساعتی که نیاز داری:</div>
+          <div class="result-price ${cls}">${fmt(minPrice)} €</div>
+          <span class="result-tag ${tagCls}">${tag}</span>
+        </div>
+      </div>
+      <div class="result-breakdown">
+        <b>محاسبه:</b> ${fmt(totalHours)} ساعت در ماه × ${fmt(minPrice)} € = ${fmt(totalHours * minPrice)} € ناخالص<br>
+        <b>هزینه‌های ثابت:</b> ${fmt(costs)} € در ماه<br>
+        <b>درآمد خالص:</b> ${fmt(totalHours * minPrice - costs)} €<br>
+        <span style="font-size:0.82rem;margin-top:4px;display:block">${msg}</span>
+      </div>
+    </div>`;
+
+  // Price comparison table
+  document.getElementById('tbl_hours').textContent = totalHours;
+  const prices = [25, 30, 35, 40, 45, 50];
+  let rows = '';
+  for (const p of prices) {
+    const gross = p * totalHours;
+    const net   = gross - costs;
+    let icon, color;
+    if (p < 30)       { icon = '✗'; color = '#D85A30'; }
+    else if (p <= 40) { icon = '✓'; color = '#1D9E75'; }
+    else              { icon = '◎'; color = '#BA7517'; }
+    rows += `<tr>
+      <td style="font-weight:600;direction:ltr">${p} €</td>
+      <td class="td-price">${fmt(gross)} €</td>
+      <td class="td-price">${fmt(net)} €</td>
+      <td style="color:${color};font-weight:700;font-size:1.1rem">${icon}</td>
+    </tr>`;
+  }
+  document.getElementById('price_table_body').innerHTML = rows;
+}
+
+calc();
+</script>
+</body>
+</html>
